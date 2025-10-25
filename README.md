@@ -23,8 +23,8 @@ Application de gestion commerciale basée sur une architecture microservices ave
 
 1. Cloner le dépôt
 ```bash
-git clone https://github.com/votre-utilisateur/ecom-microservices-app.git
-cd ecom-microservices-app/frontend/ecom-app-frontend
+git clone https://github.com/YoussoufHard/ecom-app-frontend.git
+cd ecom-app-frontend
 ```
 
 2. Installer les dépendances
