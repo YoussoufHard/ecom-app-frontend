@@ -1,0 +1,79 @@
+<mat-sidenav-container class="sidenav-container" fullscreen>
+  <!-- Sidebar -->
+  <mat-sidenav #sidenav mode="side" [opened]="isSidebarOpen" class="sidenav">
+    <div class="sidenav-header">
+      <h2>E-Commerce</h2>
+    </div>
+    
+    <mat-nav-list>
+      <a mat-list-item 
+         *ngFor="let item of menuItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: true}">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.title }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    <!-- Top Toolbar -->
+    <mat-toolbar color="primary" class="toolbar">
+      <button mat-icon-button (click)="toggleSidebar()" class="menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <span class="spacer"></span>
+      
+      <!-- Notifications -->
+      <button mat-icon-button [matMenuTriggerFor]="notificationsMenu">
+        <mat-icon [matBadge]="3" matBadgeColor="warn">notifications</mat-icon>
+      </button>
+      
+      <mat-menu #notificationsMenu="matMenu">
+        <div mat-menu-item class="notification-header">
+          <span>Notifications</span>
+          <button mat-button color="primary">Tout marquer comme lu</button>
+        </div>
+        <mat-divider></mat-divider>
+        <!-- Notification items would go here -->
+        <div class="notification-empty" mat-menu-item>
+          <mat-icon>notifications_none</mat-icon>
+          <span>Aucune nouvelle notification</span>
+        </div>
+      </mat-menu>
+      
+      <!-- User Menu -->
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu">
+        <div class="user-info">
+          <span class="user-name">Admin</span>
+          <span class="user-role">Administrateur</span>
+        </div>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>account_circle</mat-icon>
+          <span>Profil</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Paramètres</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <!-- Page Content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

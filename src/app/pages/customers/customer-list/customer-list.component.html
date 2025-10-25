@@ -1,0 +1,136 @@
+<div class="customer-list-container">
+  <div class="list-header">
+    <h2>Gestion des clients</h2>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="createNewCustomer()"
+      class="add-button">
+      <mat-icon>person_add</mat-icon>
+      Nouveau client
+    </button>
+  </div>
+
+  <div class="list-actions">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Rechercher un client</mat-label>
+      <input 
+        matInput 
+        placeholder="Nom, email ou téléphone" 
+        (keyup)="applyFilter($event)"
+        #searchInput>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="table-container" *ngIf="!isLoading; else loading">
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)" class="mat-elevation-z1">
+      <!-- Nom colonne -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom </th>
+        <td mat-cell *matCellDef="let customer"> 
+          <div class="customer-name">
+            <div class="avatar">{{ customer.firstName?.charAt(0) }}{{ customer.lastName?.charAt(0) }}</div>
+            <div class="name">
+              <div class="full-name">{{ getFullName(customer) }}</div>
+              <div class="email">{{ customer.email }}</div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Email colonne -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let customer">
+          <a [href]="'mailto:' + customer.email" class="email-link">
+            {{ customer.email }}
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- Téléphone colonne -->
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef> Téléphone </th>
+        <td mat-cell *matCellDef="let customer">
+          <a [href]="'tel:' + customer.phone" class="phone-link">
+            {{ customer.phone || 'Non renseigné' }}
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- Adresse colonne -->
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef> Adresse </th>
+        <td mat-cell *matCellDef="let customer">
+          <div class="address">{{ customer.address || 'Non renseignée' }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Actions colonne -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-header"> Actions </th>
+        <td mat-cell *matCellDef="let customer" class="actions-cell">
+          <button 
+            mat-icon-button 
+            [matMenuTriggerFor]="menu"
+            aria-label="Actions">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="viewCustomer(customer)">
+              <mat-icon>visibility</mat-icon>
+              <span>Voir les détails</span>
+            </button>
+            <button mat-menu-item (click)="editCustomer(customer)">
+              <mat-icon>edit</mat-icon>
+              <span>Modifier</span>
+            </button>
+            <button mat-menu-item (click)="deleteCustomer(customer)">
+              <mat-icon color="warn">delete</mat-icon>
+              <span class="delete-text">Supprimer</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr 
+        mat-row 
+        *matRowDef="let row; columns: displayedColumns;"
+        (click)="viewCustomer(row)"
+        class="clickable-row">
+      </tr>
+    </table>
+
+    <mat-paginator 
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      aria-label="Sélectionner la page">
+    </mat-paginator>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Chargement des clients...</p>
+    </div>
+  </ng-template>
+
+  <div *ngIf="!isLoading && dataSource.data.length === 0" class="no-data">
+    <mat-icon>people_outline</mat-icon>
+    <p>Aucun client trouvé</p>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="createNewCustomer()"
+      class="add-first-button">
+      <mat-icon>person_add</mat-icon>
+      Ajouter votre premier client
+    </button>
+  </div>
+</div>

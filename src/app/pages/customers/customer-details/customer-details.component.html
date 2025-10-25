@@ -1,0 +1,119 @@
+<div class="customer-details-container" *ngIf="!isLoading; else loading">
+  <div class="customer-header">
+    <div class="customer-avatar" *ngIf="customer">
+      <div class="avatar-circle" [style.background]="'#3f51b5'">
+        {{ getInitials(customer.firstName, customer.lastName) }}
+      </div>
+    </div>
+
+    <div class="customer-info" *ngIf="customer">
+      <div class="customer-name">u
+        <h1>{{ customer.firstName }} {{ customer.lastName }}</h1>
+        <div class="customer-actions">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="onEdit()"
+            class="action-button">
+            <mat-icon>edit</mat-icon>
+            Modifier
+          </button>
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="onDelete()"
+            class="action-button">
+            <mat-icon>delete</mat-icon>
+            Supprimer
+          </button>
+        </div>
+      </div>
+
+      <div class="customer-meta">
+        <div class="meta-item" *ngIf="customer.email">
+          <mat-icon>email</mat-icon>
+          <a [href]="'mailto:' + customer.email" class="meta-link">
+            {{ customer.email }}
+          </a>
+        </div>
+
+        <div class="meta-item" *ngIf="customer.phone">
+          <mat-icon>phone</mat-icon>
+          <a [href]="'tel:' + customer.phone" class="meta-link">
+            {{ customer.phone }}
+          </a>
+        </div>
+
+        <div class="meta-item" *ngIf="customer.company">
+          <mat-icon>business</mat-icon>
+          <span>{{ customer.company }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <mat-tab-group [(selectedIndex)]="activeTabIndex" animationDuration="0ms" class="details-tabs">
+    <!-- Onglet Informations -->
+    <mat-tab label="Informations">
+      <mat-card class="details-card">
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let item of details" class="detail-item">
+              <mat-icon mat-list-icon [style.color]="'#3f51b5'">{{ item.icon }}</mat-icon>
+              <div mat-line class="detail-label">{{ item.label }}</div>
+              <div mat-line class="detail-value"
+                   [class.copyable]="item.copyable"
+                   (click)="item.copyable && copyToClipboard(item.value)">
+                {{ item.value }}
+                <mat-icon *ngIf="item.copyable" class="copy-icon">content_copy</mat-icon>
+              </div>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+
+    <!-- Onglet Factures -->
+    <mat-tab label="Factures">
+      <mat-card class="details-card">
+        <mat-card-content>
+          <div class="empty-state" *ngIf="customer">
+            <mat-icon class="empty-icon">receipt</mat-icon>
+            <h3>Aucune facture pour le moment</h3>
+            <p>Créez une nouvelle facture pour ce client</p>
+            <button
+              mat-raised-button
+              color="primary"
+              [routerLink]="['/bills/new']"
+              [queryParams]="{ customerId: customer.id }">
+              <mat-icon>add</mat-icon>
+              Créer une facture
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+
+    <!-- Onglet Activité -->
+    <mat-tab label="Activité">
+      <mat-card class="details-card">
+        <mat-card-content>
+          <div class="empty-state">
+            <mat-icon class="empty-icon">timeline</mat-icon>
+            <h3>Aucune activité récente</h3>
+            <p>L'activité du client s'affichera ici</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails du client...</p>
+  </div>
+</ng-template>

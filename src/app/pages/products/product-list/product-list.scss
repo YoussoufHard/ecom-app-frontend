@@ -1,0 +1,132 @@
+/* Styles pour les badges d'état */
+.badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  
+  &-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  &-warning {
+    background-color: #fff8e1;
+    color: #ff8f00;
+  }
+  
+  &-danger {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  &-secondary {
+    background-color: #f5f5f5;
+    color: #616161;
+  }
+}
+
+/* Styles pour la table */
+.mat-mdc-table {
+  width: 100%;
+  margin-bottom: 1rem;
+  
+  .mat-mdc-header-row {
+    background-color: #f5f5f5;
+  }
+  
+  .mat-mdc-row {
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: #fafafa;
+    }
+  }
+  
+  .mat-column-actions {
+    text-align: right;
+    white-space: nowrap;
+    
+    button {
+      margin-left: 8px;
+    }
+  }
+}
+
+/* Styles pour la pagination */
+.mat-mdc-paginator {
+  margin-top: 1rem;
+  background-color: transparent;
+}
+
+/* Styles pour l'état de chargement */
+.empty-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #bdbdbd;
+}
+
+/* Styles pour les messages d'erreur */
+.alert {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 1rem 0;
+  
+  mat-icon {
+    margin-right: 8px;
+  }
+  
+  &-danger {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 8px;
+  }
+  
+  .mat-mdc-table {
+    .mat-mdc-header-row {
+      display: none;
+    }
+    
+    .mat-mdc-row {
+      flex-direction: column;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 8px 0;
+      
+      .mat-mdc-cell {
+        width: 100%;
+        padding: 4px 8px;
+        border: none;
+        
+        &::before {
+          content: attr(data-label);
+          font-weight: 500;
+          margin-right: 8px;
+          display: inline-block;
+          width: 120px;
+          color: #757575;
+        }
+        
+        &.mat-column-actions {
+          justify-content: flex-start;
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: 1px dashed #e0e0e0;
+          
+          &::before {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

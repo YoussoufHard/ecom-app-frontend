@@ -1,0 +1,144 @@
+<div class="container mt-4">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="me-2">{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+        {{ isEditMode ? 'Modifier le produit' : 'Nouveau produit' }}
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+        <div class="row">
+          <!-- Nom du produit -->
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Nom du produit</mat-label>
+              <input matInput formControlName="name" placeholder="Entrez le nom du produit">
+              <mat-error *ngIf="f['name'].errors?.['required']">Le nom est requis</mat-error>
+              <mat-error *ngIf="f['name'].errors?.['maxlength']">
+                Le nom ne doit pas dépasser 100 caractères
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Référence (SKU) -->
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Référence (SKU)</mat-label>
+              <input matInput formControlName="sku" placeholder="Ex: PROD-001">
+              <mat-error *ngIf="f['sku'].errors?.['required']">La référence est requise</mat-error>
+              <mat-error *ngIf="f['sku'].errors?.['maxlength']">
+                La référence ne doit pas dépasser 50 caractères
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3" placeholder="Décrivez le produit"></textarea>
+            <mat-error *ngIf="f['description'].errors?.['required']">La description est requise</mat-error>
+            <mat-error *ngIf="f['description'].errors?.['maxlength']">
+              La description ne doit pas dépasser 500 caractères
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <!-- Prix -->
+          <div class="col-md-4 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Prix (€)</mat-label>
+              <input matInput type="number" step="0.01" min="0.01" formControlName="price">
+              <span matSuffix>€</span>
+              <mat-error *ngIf="f['price'].errors?.['required']">Le prix est requis</mat-error>
+              <mat-error *ngIf="f['price'].errors?.['min']">
+                Le prix doit être supérieur à 0
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Quantité -->
+          <div class="col-md-4 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Quantité en stock</mat-label>
+              <input matInput type="number" min="0" formControlName="quantity">
+              <mat-error *ngIf="f['quantity'].errors?.['required']">La quantité est requise</mat-error>
+              <mat-error *ngIf="f['quantity'].errors?.['min']">
+                La quantité ne peut pas être négative
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Statut -->
+          <div class="col-md-4 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Statut</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+                  {{ status.viewValue }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="f['status'].errors?.['required']">Le statut est requis</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Catégorie -->
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Catégorie</mat-label>
+              <input matInput formControlName="category" placeholder="Ex: Électronique, Vêtements, etc.">
+              <mat-error *ngIf="f['category'].errors?.['required']">La catégorie est requise</mat-error>
+              <mat-error *ngIf="f['category'].errors?.['maxlength']">
+                La catégorie ne doit pas dépasser 50 caractères
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- URL de l'image -->
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>URL de l'image</mat-label>
+              <input matInput formControlName="imageUrl" placeholder="https://exemple.com/image.jpg">
+              <mat-error *ngIf="f['imageUrl'].errors?.['pattern']">
+                Veuillez entrer une URL valide (commençant par http:// ou https://)
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Aperçu de l'image -->
+        <div class="mb-3" *ngIf="f['imageUrl'].value">
+          <label class="form-label">Aperçu de l'image</label>
+          <div class="image-preview">
+            <img [src]="f['imageUrl'].value" alt="Aperçu de l'image" class="img-thumbnail" style="max-height: 200px;">
+          </div>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div *ngIf="error" class="alert alert-danger mb-3" role="alert">
+          <mat-icon>error_outline</mat-icon> {{ error }}
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" mat-stroked-button color="primary" (click)="onCancel()" [disabled]="isLoading">
+            <mat-icon>cancel</mat-icon> Annuler
+          </button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="productForm.invalid || isLoading">
+            <mat-icon *ngIf="isLoading" class="spinner">
+              <mat-spinner diameter="20"></mat-spinner>
+            </mat-icon>
+            <mat-icon *ngIf="!isLoading">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+            {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

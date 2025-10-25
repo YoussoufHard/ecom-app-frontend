@@ -1,0 +1,110 @@
+<div class="settings-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Paramètres de l'application</mat-card-title>
+      <mat-card-subtitle>Configurez votre application selon vos préférences</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+        <!-- Company Information Section -->
+        <div class="settings-section">
+          <h3>Informations de l'entreprise</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Nom de l'entreprise</mat-label>
+              <input matInput formControlName="companyName" placeholder="Ma Société">
+              <mat-error *ngIf="f['companyName'].invalid && f['companyName'].touched">
+                Le nom de l'entreprise est requis et ne doit pas dépasser 100 caractères
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email de l'entreprise</mat-label>
+              <input matInput type="email" formControlName="companyEmail" placeholder="contact@masociete.com">
+              <mat-error *ngIf="f['companyEmail'].invalid && f['companyEmail'].touched">
+                Veuillez saisir une adresse email valide
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Téléphone de l'entreprise</mat-label>
+              <input matInput formControlName="companyPhone" placeholder="+33 1 23 45 67 89">
+              <mat-error *ngIf="f['companyPhone'].invalid && f['companyPhone'].touched">
+                Format de téléphone invalide
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Adresse de l'entreprise</mat-label>
+              <input matInput formControlName="companyAddress" placeholder="123 Rue de la Paix, 75001 Paris">
+              <mat-error *ngIf="f['companyAddress'].invalid && f['companyAddress'].touched">
+                L'adresse ne doit pas dépasser 200 caractères
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Application Settings Section -->
+        <div class="settings-section">
+          <h3>Paramètres de l'application</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Devise</mat-label>
+              <mat-select formControlName="currency">
+                <mat-option *ngFor="let currency of currencyOptions" [value]="currency.value">
+                  {{ currency.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Langue</mat-label>
+              <mat-select formControlName="language">
+                <mat-option *ngFor="let language of languageOptions" [value]="language.value">
+                  {{ language.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Thème</mat-label>
+              <mat-select formControlName="theme">
+                <mat-option *ngFor="let theme of themeOptions" [value]="theme.value">
+                  {{ theme.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="toggle-row">
+            <mat-slide-toggle formControlName="notifications">
+              Activer les notifications
+            </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <mat-slide-toggle formControlName="autoBackup">
+              Sauvegarde automatique
+            </mat-slide-toggle>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button type="button" (click)="onReset()">Réinitialiser</button>
+      <button mat-raised-button color="primary" type="submit" (click)="onSubmit()"
+              [disabled]="settingsForm.invalid || isLoading">
+        <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
+        {{ isLoading ? 'Sauvegarde...' : 'Sauvegarder' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

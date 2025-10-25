@@ -1,0 +1,95 @@
+<div class="bill-list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Gestion des factures</mat-card-title>
+      <mat-card-subtitle>Gérez vos factures clients</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="actions-bar">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Rechercher</mat-label>
+          <input matInput [(ngModel)]="searchText" (keyup.enter)="applyFilter($event)" placeholder="Numéro, client...">
+          <button matSuffix mat-icon-button (click)="applyFilter($event)">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="createNewBill()">
+          <mat-icon>add</mat-icon>
+          Nouvelle facture
+        </button>
+      </div>
+
+      <div *ngIf="isLoading" class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Chargement des factures...</p>
+      </div>
+
+      <div *ngIf="!isLoading" class="table-container">
+        <table mat-table [dataSource]="dataSource" class="bills-table" matSort>
+          <!-- Bill Number Column -->
+          <ng-container matColumnDef="billNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>N° Facture</th>
+            <td mat-cell *matCellDef="let bill">{{ bill.billNumber }}</td>
+          </ng-container>
+
+          <!-- Customer Name Column -->
+          <ng-container matColumnDef="customerName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+            <td mat-cell *matCellDef="let bill">{{ bill.customerName }}</td>
+          </ng-container>
+
+          <!-- Total Amount Column -->
+          <ng-container matColumnDef="totalAmount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Montant</th>
+            <td mat-cell *matCellDef="let bill">{{ bill.totalAmount | currency:'EUR':'symbol':'1.2-2':'fr' }}</td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
+            <td mat-cell *matCellDef="let bill">
+              <span class="status-badge" [ngClass]="getStatusBadgeClass(bill.status)">
+                {{ getStatusLabel(bill.status) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Due Date Column -->
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Échéance</th>
+            <td mat-cell *matCellDef="let bill">{{ bill.dueDate | date:'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let bill">
+              <button mat-icon-button (click)="viewBill(bill)" matTooltip="Voir les détails">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button (click)="editBill(bill)" matTooltip="Modifier">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="deleteBill(bill)" matTooltip="Supprimer" color="warn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator
+          [length]="totalItems"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

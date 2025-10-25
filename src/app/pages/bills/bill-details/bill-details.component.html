@@ -1,0 +1,89 @@
+<div class="bill-details-container">
+  <div class="header">
+    <button mat-icon-button (click)="onBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Détails de la facture</h1>
+    <button mat-raised-button color="primary" (click)="onEdit()" class="edit-button">
+      <mat-icon>edit</mat-icon>
+      Modifier
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Chargement de la facture...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button (click)="onBack()">Retour à la liste</button>
+  </div>
+
+  <div *ngIf="bill && !isLoading" class="bill-content">
+    <mat-card class="bill-card">
+      <mat-card-header>
+        <mat-card-title>{{ bill.billNumber }}</mat-card-title>
+        <mat-card-subtitle>{{ bill.customerName }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="bill-info">
+          <div class="info-section">
+            <h3>Informations générales</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Numéro de facture:</label>
+                <span>{{ bill.billNumber }}</span>
+              </div>
+              <div class="info-item">
+                <label>Client:</label>
+                <span>{{ bill.customerName }}</span>
+              </div>
+              <div class="info-item">
+                <label>Montant total:</label>
+                <span class="amount">{{ bill.totalAmount | currency:'EUR':'symbol':'1.2-2':'fr' }}</span>
+              </div>
+              <div class="info-item">
+                <label>Statut:</label>
+                <span class="status-badge" [ngClass]="getStatusBadgeClass(bill.status)">
+                  {{ getStatusLabel(bill.status) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h3>Dates</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Date d'émission:</label>
+                <span>{{ bill.issueDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="info-item">
+                <label>Date d'échéance:</label>
+                <span>{{ bill.dueDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="info-item" *ngIf="bill.createdAt">
+                <label>Créée le:</label>
+                <span>{{ bill.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+              </div>
+              <div class="info-item" *ngIf="bill.updatedAt">
+                <label>Modifiée le:</label>
+                <span>{{ bill.updatedAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section" *ngIf="bill.notes">
+            <h3>Notes</h3>
+            <div class="notes">
+              <p>{{ bill.notes }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

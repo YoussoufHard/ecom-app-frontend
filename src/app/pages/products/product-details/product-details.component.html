@@ -1,0 +1,98 @@
+<div class="product-details-container">
+  <div class="header">
+    <button mat-icon-button (click)="onBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Détails du produit</h1>
+    <button mat-raised-button color="primary" (click)="onEdit()" class="edit-button">
+      <mat-icon>edit</mat-icon>
+      Modifier
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner></mat-spinner>
+    <p>Chargement du produit...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button (click)="onBack()">Retour à la liste</button>
+  </div>
+
+  <div *ngIf="product && !isLoading" class="product-content">
+    <mat-card class="product-card">
+      <mat-card-header>
+        <mat-card-title>{{ product.name }}</mat-card-title>
+        <mat-card-subtitle>{{ product.sku }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="product-info">
+          <div class="info-section">
+            <h3>Informations générales</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Nom:</label>
+                <span>{{ product.name }}</span>
+              </div>
+              <div class="info-item">
+                <label>SKU:</label>
+                <span>{{ product.sku }}</span>
+              </div>
+              <div class="info-item">
+                <label>Description:</label>
+                <span>{{ product.description || 'N/A' }}</span>
+              </div>
+              <div class="info-item">
+                <label>Catégorie:</label>
+                <span>{{ product.category || 'N/A' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h3>Prix et stock</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Prix:</label>
+                <span class="price">{{ product.price | currency:'EUR':'symbol':'1.2-2':'fr' }}</span>
+              </div>
+              <div class="info-item">
+                <label>Stock:</label>
+                <span class="stock" [ngClass]="getStatusBadgeClass(product.status)">
+                  {{ product.stockQuantity }}
+                </span>
+              </div>
+              <div class="info-item">
+                <label>Statut:</label>
+                <span class="status-badge" [ngClass]="getStatusBadgeClass(product.status)">
+                  {{ getStatusLabel(product.status) }}
+                </span>
+              </div>
+              <div class="info-item">
+                <label>Seuil d'alerte:</label>
+                <span>{{ product.lowStockThreshold || 'N/A' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section" *ngIf="product.createdAt || product.updatedAt">
+            <h3>Dates</h3>
+            <div class="info-grid">
+              <div class="info-item" *ngIf="product.createdAt">
+                <label>Créé le:</label>
+                <span>{{ product.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+              </div>
+              <div class="info-item" *ngIf="product.updatedAt">
+                <label>Modifié le:</label>
+                <span>{{ product.updatedAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

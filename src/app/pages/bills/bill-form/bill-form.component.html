@@ -1,0 +1,97 @@
+<div class="bill-form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ isEditMode ? 'Modifier la facture' : 'Nouvelle facture' }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="billForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Numéro de facture</mat-label>
+            <input matInput formControlName="billNumber" placeholder="INV-2024-001">
+            <mat-error *ngIf="f['billNumber'].invalid && f['billNumber'].touched">
+              Le numéro de facture est requis et ne doit pas dépasser 50 caractères
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Client</mat-label>
+            <input matInput formControlName="customerName" placeholder="Nom du client">
+            <mat-error *ngIf="f['customerName'].invalid && f['customerName'].touched">
+              Le nom du client est requis
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Montant total (€)</mat-label>
+            <input matInput type="number" formControlName="totalAmount" placeholder="0.00" step="0.01" min="0">
+            <mat-error *ngIf="f['totalAmount'].invalid && f['totalAmount'].touched">
+              Le montant doit être supérieur à 0
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Statut</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+                {{ status.viewValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f['status'].invalid && f['status'].touched">
+              Le statut est requis
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Date d'émission</mat-label>
+            <input matInput [matDatepicker]="issuePicker" formControlName="issueDate" placeholder="JJ/MM/AAAA" title="Date d'émission">
+            <mat-datepicker-toggle matSuffix [for]="issuePicker"></mat-datepicker-toggle>
+            <mat-datepicker #issuePicker></mat-datepicker>
+            <mat-error *ngIf="f['issueDate'].invalid && f['issueDate'].touched">
+              La date d'émission est requise
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date d'échéance</mat-label>
+            <input matInput [matDatepicker]="duePicker" formControlName="dueDate" placeholder="JJ/MM/AAAA" title="Date d'échéance">
+            <mat-datepicker-toggle matSuffix [for]="duePicker"></mat-datepicker-toggle>
+            <mat-datepicker #duePicker></mat-datepicker>
+            <mat-error *ngIf="f['dueDate'].invalid && f['dueDate'].touched">
+              La date d'échéance est requise
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notes</mat-label>
+            <textarea matInput formControlName="notes" placeholder="Notes supplémentaires..." rows="3"></textarea>
+            <mat-error *ngIf="f['notes'].invalid && f['notes'].touched">
+              Les notes ne doivent pas dépasser 500 caractères
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="error" class="error-message">
+          <mat-icon color="warn">error</mat-icon>
+          {{ error }}
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button type="button" (click)="onCancel()">Annuler</button>
+      <button mat-raised-button color="primary" type="submit" (click)="onSubmit()"
+              [disabled]="billForm.invalid || isLoading">
+        <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
+        {{ isLoading ? (isEditMode ? 'Mise à jour...' : 'Création...') : (isEditMode ? 'Mettre à jour' : 'Créer') }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
